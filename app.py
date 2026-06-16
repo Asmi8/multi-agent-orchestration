@@ -28,13 +28,24 @@ def knowledge_agent(query):
             return response["extract"]
 
         # 2. If direct page fails, use Wikipedia search
-        search_url = f"https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={query}&format=json"
-        search_results = requests.get(search_url).json()
+search_url = f"https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={query}&format=json"
+search_results = requests.get(search_url).json()
 
-        if "query" in search_results and search_results["query"]["search"]:
-            top_title = search_results["query"]["search"][0]["title"]
-            summary_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{top_title.replace(' ', '_')}"
-            summary_response = requests.get(summary_url).json()
+if "query" in search_results and search_results["query"]["search"]:
+    # Get the top search result title
+    top_title = search_results["query"]["search"][0]["title"]
+
+    # Fetch summary for that title
+    summary_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{top_title.replace(' ', '_')}"
+    summary_response = requests.get(summary_url).json()
+
+    # Return summary if available
+    if "extract" in summary_response:
+        return summary_response["extract"]
+
+# If nothing works
+return "No Wikipedia information found."
+
 
             if "extract" in summary_response:
                 return summary_response["extract"]
