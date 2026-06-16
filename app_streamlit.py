@@ -1,4 +1,5 @@
 import streamlit as st
+import requests
 
 # -----------------------------
 # Simple In-Memory RAG
@@ -15,10 +16,25 @@ def simple_rag(query):
     return [doc for doc in DOCUMENTS if any(word in doc.lower() for word in query.split())]
 
 # -----------------------------
+# Knowledge Agent (Wikipedia)
+# -----------------------------
+def knowledge_agent(query):
+    try:
+        url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{query.replace(' ', '_')}"
+        response = requests.get(url).json()
+
+        if "extract" in response:
+            return response["extract"]
+        else:
+            return "No Wikipedia information found."
+    except:
+        return "Knowledge agent failed to fetch information."
+
+# -----------------------------
 # Worker Agents
 # -----------------------------
 def summarize(text):
-    return f"Summary: {text[:80]}..."
+    return f"Summary: {text[:120]}..."
 
 def extract_keywords(text):
     return [w for w in text.split() if len(w) > 5]
@@ -32,12 +48,14 @@ def sentiment_analysis(text):
 # Planning Agent
 # -----------------------------
 def planning_agent(task):
-    return ["rag", "summarize", "keywords", "sentiment"]
+    return ["knowledge", "rag", "summarize", "keywords", "sentiment"]
 
 # -----------------------------
 # Router
 # -----------------------------
 def agent_router(step, task):
+    if step == "knowledge":
+        return knowledge_agent(task)
     if step == "rag":
         docs = simple_rag(task)
         return docs if docs else ["No relevant documents found."]
@@ -70,7 +88,7 @@ def agentic_coordinator(task):
 # -----------------------------
 # Streamlit UI
 # -----------------------------
-st.title("🤖 Multi-Agent Orchestrator (Streamlit Version)")
+st.title("🤖 Multi-Agent Orchestrator (Enhanced with Knowledge Agent)")
 
 user_input = st.text_area("Enter your query:")
 
