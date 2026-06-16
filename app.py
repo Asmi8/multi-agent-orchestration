@@ -20,7 +20,8 @@ def knowledge_agent(query):
 
         if "description" in response and response["description"]:
             return response["description"]
-    except:
+
+    except Exception:
         pass
 
     # 2. Fallback: Wikipedia search
@@ -39,7 +40,8 @@ def knowledge_agent(query):
 
             if "description" in summary_response and summary_response["description"]:
                 return summary_response["description"]
-    except:
+
+    except Exception:
         pass
 
     return "No Wikipedia information found."
