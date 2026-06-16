@@ -19,41 +19,33 @@ def simple_rag(query):
 # Knowledge Agent (Wikipedia + Search Fallback)
 # -----------------------------
 def knowledge_agent(query):
+    # 1. Try direct Wikipedia summary
     try:
-        # 1. Try direct page
         direct_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{query.replace(' ', '_')}"
         response = requests.get(direct_url).json()
 
         if "extract" in response:
             return response["extract"]
+    except:
+        pass
 
-        # 2. If direct page fails, use Wikipedia search
-search_url = f"https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={query}&format=json"
-search_results = requests.get(search_url).json()
+    # 2. If direct page fails, use Wikipedia search
+    try:
+        search_url = f"https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={query}&format=json"
+        search_results = requests.get(search_url).json()
 
-if "query" in search_results and search_results["query"]["search"]:
-    # Get the top search result title
-    top_title = search_results["query"]["search"][0]["title"]
+        if "query" in search_results and search_results["query"]["search"]:
+            top_title = search_results["query"]["search"][0]["title"]
 
-    # Fetch summary for that title
-    summary_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{top_title.replace(' ', '_')}"
-    summary_response = requests.get(summary_url).json()
-
-    # Return summary if available
-    if "extract" in summary_response:
-        return summary_response["extract"]
-
-# If nothing works
-return "No Wikipedia information found."
-
+            summary_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{top_title.replace(' ', '_')}"
+            summary_response = requests.get(summary_url).json()
 
             if "extract" in summary_response:
                 return summary_response["extract"]
+    except:
+        pass
 
-        return "No Wikipedia information found."
-
-    except Exception:
-        return "Knowledge agent failed to fetch information."
+    return "No Wikipedia information found."
 
 # -----------------------------
 # Worker Agents
