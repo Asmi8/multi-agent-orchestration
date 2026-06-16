@@ -1,11 +1,18 @@
 import streamlit as st
-from chromadb import PersistentClient
 
 # -----------------------------
-# Logging helper
+# Simple In-Memory RAG
 # -----------------------------
-def log(agent, message):
-    print(f"[{agent}] {message}")
+DOCUMENTS = [
+    "Multi-agent orchestration coordinates multiple AI agents.",
+    "Agents can specialize in planning, research, coding, or analysis.",
+    "A coordinator agent manages task delegation and integration.",
+    "RAG improves accuracy by grounding responses in documents."
+]
+
+def simple_rag(query):
+    query = query.lower()
+    return [doc for doc in DOCUMENTS if any(word in doc.lower() for word in query.split())]
 
 # -----------------------------
 # Worker Agents
@@ -14,8 +21,7 @@ def summarize(text):
     return f"Summary: {text[:80]}..."
 
 def extract_keywords(text):
-    words = text.split()
-    return [w for w in words if len(w) > 5]
+    return [w for w in text.split() if len(w) > 5]
 
 def sentiment_analysis(text):
     if "love" in text.lower():
@@ -23,47 +29,18 @@ def sentiment_analysis(text):
     return "Neutral"
 
 # -----------------------------
-# RAG Setup (Persistent Chroma)
-# -----------------------------
-client = PersistentClient(path="./db")
-collection = client.get_or_create_collection("rag_docs")
-
-# Add sample docs (only once)
-documents = [
-    "Multi-agent orchestration coordinates multiple AI agents.",
-    "Agents can specialize in planning, research, coding, or analysis.",
-    "A coordinator agent manages task delegation and integration.",
-    "RAG improves accuracy by grounding responses in documents."
-]
-
-# Avoid duplicate inserts
-existing = collection.count()
-if existing == 0:
-    collection.add(
-        documents=documents,
-        ids=[str(i) for i in range(len(documents))]
-    )
-
-def rag_agent(query):
-    results = collection.query(query_texts=[query], n_results=2)
-    return results.get("documents", [[]])[0]
-
-# -----------------------------
 # Planning Agent
 # -----------------------------
 def planning_agent(task):
-    plan = ["rag", "summarize", "keywords", "sentiment"]
-    log("Planner", f"Plan: {plan}")
-    return plan
+    return ["rag", "summarize", "keywords", "sentiment"]
 
 # -----------------------------
 # Router
 # -----------------------------
 def agent_router(step, task):
-    log("Router", f"Dispatching step '{step}'")
-
     if step == "rag":
-        return rag_agent(task)
+        docs = simple_rag(task)
+        return docs if docs else ["No relevant documents found."]
     if step == "summarize":
         return summarize(task)
     if step == "keywords":
@@ -75,8 +52,6 @@ def agent_router(step, task):
 # Coordinator
 # -----------------------------
 def agentic_coordinator(task):
-    log("Coordinator", f"Starting task: {task}")
-
     plan = planning_agent(task)
     results = {}
     context = task
@@ -100,13 +75,11 @@ st.title("🤖 Multi-Agent Orchestrator (Streamlit Version)")
 user_input = st.text_area("Enter your query:")
 
 if st.button("Run Agents"):
-    if user_input.strip() == "":
+    if not user_input.strip():
         st.warning("Please enter a query.")
     else:
         result = agentic_coordinator(user_input)
-
         st.subheader("Plan")
         st.write(result["plan"])
-
         st.subheader("Results")
         st.json(result["results"])
