@@ -26,7 +26,8 @@ def sentiment_analysis(text):
 # -----------------------------
 # RAG Setup
 # -----------------------------
-client = chromadb.Client(Settings(chroma_db_impl="duckdb+parquet", persist_directory="./db"))
+from chromadb import PersistentClient
+client = PersistentClient(path="./db")
 collection = client.get_or_create_collection("rag_docs")
 
 # Add sample docs (you can replace these)
