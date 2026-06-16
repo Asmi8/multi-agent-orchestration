@@ -16,25 +16,39 @@ def simple_rag(query):
     return [doc for doc in DOCUMENTS if any(word in doc.lower() for word in query.split())]
 
 # -----------------------------
-# Knowledge Agent (Wikipedia)
+# Knowledge Agent (Wikipedia + Search Fallback)
 # -----------------------------
 def knowledge_agent(query):
     try:
-        url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{query.replace(' ', '_')}"
-        response = requests.get(url).json()
+        # 1. Try direct page
+        direct_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{query.replace(' ', '_')}"
+        response = requests.get(direct_url).json()
 
         if "extract" in response:
             return response["extract"]
-        else:
-            return "No Wikipedia information found."
-    except:
+
+        # 2. If direct page fails, use Wikipedia search
+        search_url = f"https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={query}&format=json"
+        search_results = requests.get(search_url).json()
+
+        if "query" in search_results and search_results["query"]["search"]:
+            top_title = search_results["query"]["search"][0]["title"]
+            summary_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{top_title.replace(' ', '_')}"
+            summary_response = requests.get(summary_url).json()
+
+            if "extract" in summary_response:
+                return summary_response["extract"]
+
+        return "No Wikipedia information found."
+
+    except Exception:
         return "Knowledge agent failed to fetch information."
 
 # -----------------------------
 # Worker Agents
 # -----------------------------
 def summarize(text):
-    return f"Summary: {text[:120]}..."
+    return f"Summary: {text[:200]}..."
 
 def extract_keywords(text):
     return [w for w in text.split() if len(w) > 5]
