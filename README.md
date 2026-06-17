@@ -4,21 +4,21 @@ What is a Multi‑Agent System?
 A multi‑agent system (MAS) is a setup where multiple independent agents (small programs, models, or components) work together to solve a task.
 Each agent has one job, and the system becomes powerful because these agents collaborate.
 
-Think of it like a team:
+Think of it like:
 
-One agent gathers information
+- One agent gathers information
 
-One agent retrieves documents
+- One agent retrieves documents
 
-One agent summarizes
+- One agent summarizes
 
-One agent analyzes sentiment
+- One agent analyzes sentiment
 
-One agent extracts keywords
+- One agent extracts keywords
 
-One agent plans the workflow
+- One agent plans the workflow
 
-One agent coordinates everything
+- One agent coordinates everything
 
 Instead of one big model doing everything, you break the task into specialized parts.
 
@@ -38,8 +38,6 @@ This is exactly how modern agentic AI frameworks work (like AutoGPT, CrewAI, Lan
 This project is a simple, modular **multi‑agent system** built using **Python** and **Streamlit**. It demonstrates how multiple specialized agents can collaborate to process a user query step‑by‑step — similar to modern agentic AI workflows.
 
 The goal is to understand **agent orchestration**, **task routing**, **knowledge retrieval**, and **context passing** between agents.
-
----
 
 ## Features
 
@@ -71,8 +69,6 @@ Simple rule‑based sentiment:
 ### 7. Coordinator Agent
 Executes each agent in sequence and integrates their outputs into a final response.
 
----
-
 ## Architecture
 
 The system follows a linear multi‑agent pipeline:
@@ -86,21 +82,17 @@ The system follows a linear multi‑agent pipeline:
 7. Sentiment Analyzer classifies tone  
 8. Coordinator returns the final combined output  
 
----
-
 ## Streamlit App
 
 The UI allows users to:
 - Enter a topic for Wikipedia search  
 - Or paste their own text  
 - View outputs from all agents  
-- See the full multi‑agent pipeline in action  
+- See the full multi‑agent pipeline in action
 
----
+# Links
+Link to App: https://multi-agent-orchestration-ctlac5blt8rztmnmzfyirr.streamlit.app/
+Link to GitHub Repo: https://github.com/Asmi8/multi-agent-orchestration
 
-## Installation
 
-```bash
-pip install -r requirements.txt
-streamlit run app.py
 
