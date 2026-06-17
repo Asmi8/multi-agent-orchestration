@@ -35,7 +35,7 @@ Why multi‑agent systems matter?
 5. More reliable reasoning (because each agent focuses on one thing)
 
 This is exactly how modern agentic AI frameworks work (like AutoGPT, CrewAI, LangGraph, etc.).
-This project is a simple, modular **multi‑agent system** built using **Python** and **Streamlit**. It demonstrates how multiple specialized agents can collaborate to process a user query step‑by‑step — similar to modern agentic AI workflows.
+This project is a simple, modular **multi‑agent system** built using **Python** and **Streamlit**. It demonstrates how multiple specialized agents can collaborate to process a user query step‑by‑step, similar to modern agentic AI workflows.
 
 The goal is to understand **agent orchestration**, **task routing**, **knowledge retrieval**, and **context passing** between agents.
 
@@ -56,7 +56,7 @@ Searches a small in‑memory document store for relevant lines.
 Demonstrates the basics of **retrieval‑augmented generation (RAG)**.
 
 ### 4. Summarizer Agent
-Creates a short summary of the text (first 200 characters).
+Creates a summary of the text (first 200 characters).
 
 ### 5. Keyword Extractor Agent
 Extracts meaningful keywords (words longer than 5 characters).
@@ -85,7 +85,7 @@ The system follows a linear multi‑agent pipeline:
 ## Streamlit App
 
 The UI allows users to:
-- Enter a topic for Wikipedia search  
+- Enter a topic for a Wikipedia search  
 - Or paste their own text  
 - View outputs from all agents  
 - See the full multi‑agent pipeline in action
