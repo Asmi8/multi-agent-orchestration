@@ -137,8 +137,16 @@ if st.button("Run Agents"):
     if not user_input.strip():
         st.warning("Please enter a query.")
     else:
-        result = agentic_coordinator(user_input)
-        st.subheader("Plan")
-        st.write(result["plan"])
-        st.subheader("Results")
-        st.json(result["results"])
+        if mode == "Search topic (Wikipedia)":
+            result = agentic_coordinator(user_input)
+            st.subheader("Plan")
+            st.write(result["plan"])
+            st.subheader("Results")
+            st.json(result["results"])
+        else:
+            st.subheader("Results (Custom Text Mode)")
+            st.write({
+                "summarize": summarize(user_input),
+                "keywords": extract_keywords(user_input),
+                "sentiment": sentiment_analysis(user_input)
+            })
