@@ -126,7 +126,12 @@ def agentic_coordinator(task):
 # -----------------------------
 st.title("🤖 Multi-Agent Orchestrator (Enhanced with Knowledge Agent)")
 
-user_input = st.text_area("Enter your query:")
+mode = st.selectbox(
+    "Choose input type:",
+    ["Search topic (Wikipedia)", "Paste your own text"]
+)
+
+user_input = st.text_area("Enter your query or text:")
 
 if st.button("Run Agents"):
     if not user_input.strip():
